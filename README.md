@@ -1,4 +1,4 @@
-# Advance Playwright Framework
+# Advanced Playwright Framework
 
 A Playwright-based test automation framework built with the Page Object Model (POM) pattern for scalable UI test coverage.
 
@@ -47,11 +47,7 @@ AdvancePlaywrightFramework/
 ├── playwright.config.ts
 ├── package.json
 ├── .gitignore
-├── README.md
-├── logs/
-├── reports/
-├── playwright-report/
-└── test-results/
+└── README.md
 ```
 
 ## Prerequisites
