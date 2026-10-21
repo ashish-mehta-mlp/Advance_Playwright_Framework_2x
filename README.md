@@ -1,104 +1,81 @@
 # Advanced Playwright Framework
 
-A Playwright-based test automation framework built with the Page Object Model (POM) pattern for scalable UI and API test coverage.
+A TypeScript test automation framework built with Playwright. It combines reusable Page Object Model (POM) components with UI end-to-end tests, API coverage, shared fixtures, and test-data utilities.
 
-## Overview
+## Features
 
-This project is designed for end-to-end browser testing using Playwright with a structured test architecture that separates:
-
-- test specifications
-- page objects
-- API clients and request helpers
-- shared fixtures and test data
-- reusable utility modules
-- environment configuration
-- reporting and logging
+- Browser-based login, inventory, cart, and checkout scenarios using page objects.
+- API tests for RESTful Booker, including CRUD flows and negative cases.
+- Reusable Playwright fixtures for page objects and common application states.
+- JSON Schema validation with AJV and JSONPath query examples.
+- Test-data generation, structured logging, and custom reporting utilities.
+- Environment-aware base URL configuration and optional environment-based credentials.
 
 ## Tech Stack
 
-- Playwright
-- TypeScript
-- Node.js
-- Page Object Model
-- Playwright API testing
-- Winston logger
-- Allure/HTML reporting support
+- Node.js, TypeScript, and Playwright Test
+- Faker for test data generation
+- AJV and JSONPath Plus for API data validation and querying
+- Winston for logging
+- Allure Playwright integration
 
 ## Project Structure
 
 ```text
-AdvancePlaywrightFramework/
-├── src/
-│   ├── api/
-│   ├── config/
-│   ├── fixtures/
-│   ├── pages/
-│   │   ├── BasePage.ts
-│   │   ├── LoginPage.ts
-│   │   ├── InventoryPage.ts
-│   │   ├── CartPage.ts
-│   │   ├── CheckoutStepOnePage.ts
-│   │   ├── CheckoutStepTwoPage.ts
-│   │   ├── CheckoutCompletePage.ts
-│   │   └── ItemDetailsPage.ts
-│   ├── tests/
-│   │   ├── example.spec.ts
-│   │   └── login.spec.ts
-│   ├── testdata/
-│   ├── utils/
-│   │   ├── CustomReporter.ts
-│   │   ├── DataGenerator.ts
-│   │   ├── logger.ts
-│   │   └── UtilElementLocator.ts
-│   └── config/
-├── playwright.config.ts
-├── package.json
-├── .gitignore
-└── README.md
+src/
+├── api/          API clients and request helpers
+├── config/       Environment and credential configuration
+├── fixtures/     Shared Playwright fixtures
+├── pages/        UI page objects for login and checkout flows
+├── testdata/     Login data, booking data, and JSON schemas
+├── tests/
+│   ├── End2End/  Browser-based end-to-end tests
+│   ├── Login/    Login scenarios
+│   ├── aiTest/   AI-assisted test-data generation examples
+│   └── apisTests/ API, schema, and JSONPath tests
+└── utils/        Reporting, logging, API, and validation helpers
+
+playwright.config.ts
+package.json
 ```
 
 ## Prerequisites
 
-Before running the tests, ensure you have:
-
-- Node.js installed
-- npm installed
-- Playwright browsers installed
+- Node.js (an active LTS release recommended)
+- npm
+- A supported Playwright browser
 
 ## Installation
 
+Install dependencies and the Chromium browser:
+
 ```bash
 npm install
-npx playwright install
+npx playwright install chromium
 ```
 
-## Run Tests
+## Running Tests
 
-Run all tests:
+Run the full suite:
 
 ```bash
 npx playwright test
 ```
 
-Run tests in headed mode:
+Run tests in a visible browser or open Playwright UI mode:
 
 ```bash
 npx playwright test --headed
+npx playwright test --ui
 ```
 
-Run tests with a specific environment:
+Run a specific test file (adjust the path to the scenario you want):
 
 ```bash
-$env:TTA_ENV="stg"; npx playwright test
+npx playwright test src/tests/Login/Login.spec.ts
 ```
 
-Run a specific spec file:
-
-```bash
-npx playwright test src/tests/login.spec.ts
-```
-
-Open the Playwright HTML report:
+View the HTML report after a run:
 
 ```bash
 npx playwright show-report
@@ -106,38 +83,28 @@ npx playwright show-report
 
 ## Configuration
 
-The framework uses `playwright.config.ts` for configuration such as:
+The Playwright configuration resolves the base URL in this order:
 
-- base URL resolution
-- test directory
-- timeout settings
-- browser project setup
-- reporter configuration
-- screenshot/video/trace capture behavior
+1. `BASE_URL`, if set directly.
+2. The URL for `TTA_ENV`, using the corresponding environment URL variable.
+3. The default QA URL.
 
-The base URL is selected from `TTA_ENV`. Supported values are `qa` (default),
-`dev`, `local`, `stg`, `stage`, `staging`, `prod`, `production`, and `api`.
-Set `BASE_URL` to override the environment-specific URL, or set a URL such as
-`QA_BASE_URL` and `STG_BASE_URL` to customize a specific environment.
+Supported `TTA_ENV` values are `qa` (default), `dev`, `local`, `stg`, `stage`, `staging`, `prod`, `production`, and `api`. Configure `QA_BASE_URL`, `DEV_BASE_URL`, `STG_BASE_URL`, `PROD_BASE_URL`, or `API_BASE_URL` as needed. The API environment defaults to the RESTful Booker demo service.
 
-## Reporting
+Credentials can be supplied through `STANDARD_USER` and `TTA_SECRET`. Keep credentials and other secrets in local environment configuration or a CI secret store; never commit them to the repository.
 
-Test results can be generated in the default Playwright HTML report and custom reporting folders such as:
+For example, in PowerShell:
 
-- `playwright-report/`
-- `playwright_reports/`
-- `reports/`
+```powershell
+$env:TTA_ENV = "stg"
+$env:STG_BASE_URL = "https://your-staging-url"
+npx playwright test
+```
 
-## Notes
+## Reports and Artifacts
 
-This project is intended as a reusable automation foundation for UI testing workflows and can be extended with additional features like:
-
-- environment-specific configs
-- CI/CD integration
-- API testing modules
-- custom assertions and helpers
-- data-driven test scenarios
+Playwright's HTML report is generated in `playwright-report/`. Test runs may also produce traces, screenshots, videos, logs, and custom reports according to the project configuration. Generated results should not be committed unless specifically required.
 
 ## License
 
-This project is for learning and test automation purposes.
+This project is intended for learning and test automation purposes.
